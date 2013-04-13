@@ -304,6 +304,11 @@ function initUI(response) {
     }
 
     //Add/Remove tools depending on the config settings or url parameters
+    /* ===== ADDITION ===== */
+    addVisitWidget();
+    toggleVisit();
+    /* ===== END ADDITION ===== */
+
     if (configOptions.displayprint === true) {
         //get print info 
        /* var printInfo = esri.request({
@@ -914,7 +919,7 @@ function addMeasurementWidget() {
         innerHTML: esri.substitute({
             close_title: i18n.panel.close.title,
             close_alt: i18n.panel.close.label
-        }, '<a alt=${close_alt} title=${close_title} href="JavaScript:toggleMeasure();"><img  src="images/close.png"/></a>')
+        }, '<a href="javascript:toggleMeasure();"><img  src="images/close.png"/></a>')
     }, titlePane);
 
     measure = new esri.dijit.Measurement({
@@ -1621,3 +1626,57 @@ function createElevationProfileTools() {
         
         map.infoWindow.resize(width, height);
       }
+
+
+/* ====================================================================== */
+/*                               ADDITION                                 */
+/* ====================================================================== */
+
+//create a floating pane to hold the visit widget
+function addVisitWidget() {
+    var fp = new dojox.layout.FloatingPane({
+        title: "My Visit",
+        resizable: false,
+        dockable: false,
+        closable: false,
+        style: "position:absolute;top:200px;left:50px;width:245px;height:175px;z-index:99;visibility:hidden;",
+        id: 'visit'
+    }, dojo.byId('visit'));
+    fp.startup();
+
+    var titlePane = dojo.query('#visit .dojoxFloatingPaneTitle')[0];
+    //add close button to title pane
+    var closeDiv = dojo.create('div', {
+        id: "closeBtn",
+        innerHTML: esri.substitute({
+            close_title: i18n.panel.close.title,
+            close_alt: i18n.panel.close.label
+        }, '<a href="javascript:toggleVisit();"><img  src="images/close.png"/></a>')
+    }, titlePane);
+
+    var contentDiv = dojo.byId('visitDiv');
+    contentDiv.innerHTML = "Here is some content... Here is some content... Here is some content... Here is some content... Here is some content... Here is some content... Here is some content... Here is some content... Here is some content... Here is some content... Here is some content... Here is some content... Here is some content... Here is some content... Here is some content... Here is some content... Here is some content... Here is some content... Here is some content...  Here is some content... Here is some content... Here is some content...  Here is some content... Here is some content... Here is some content... "
+
+    var toggleButton = new dijit.form.ToggleButton({
+        label: "My Visit",
+        title: "MY VISIT",
+        id: "toggleButton2",
+        iconClass: "esriMeasureIcon"
+    });
+
+    dojo.connect(toggleButton, "onClick", function () {
+        toggleVisit();
+    });
+
+    dojo.byId('webmap-toolbar-center').appendChild(toggleButton.domNode);
+}
+//Show/hide the measure widget when the measure button is clicked.
+function toggleVisit() {
+    if (dojo.byId('visit').style.visibility === 'hidden') {
+        dijit.byId('visit').show();
+        dijit.byId('toggleButton2').set('checked', true); //check the measure toggle button
+    } else {
+        dijit.byId('visit').hide();
+        dijit.byId('toggleButton2').set('checked', false); //uncheck the measure toggle button
+    }
+}

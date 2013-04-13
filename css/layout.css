@@ -531,3 +531,26 @@ div#editDiv.templatePicker .grid  .selectedItem {
 #editDiv.dojoxGrid .grid{
 
 }
+
+
+/* ====================================================================== */
+/*                               ADDITION                                 */
+/* ====================================================================== */
+#visit {
+    top:50px;
+    right:10px;
+    overflow:hidden;
+    background-color:#fff;
+    border: solid 1px #999;
+    border-radius:3px;
+    -moz-border-radius:3px;
+    -webkit-border-radius: 3px;
+    padding:0px !important;
+    position: absolute;
+}
+#visitDiv{
+    padding:2px !important;
+    overflow: auto;
+    width: 243px;
+    height: 144px;
+}
