@@ -166,7 +166,7 @@ function createMap(webmapitem) {
     var mapDeferred = esri.arcgis.utils.createMap(webmapitem, "map", {
         mapOptions: {
             slider: configOptions.displaySlider,
-            sliderStyle: 'small',
+            sliderStyle: 'small', //'large',  //TODO: Use conditional to set large on PCs and small on tablets
             wrapAround180: !configOptions.constrainmapextent,
             showAttribution: true,
             //set wraparound to false if the extent is limited.
