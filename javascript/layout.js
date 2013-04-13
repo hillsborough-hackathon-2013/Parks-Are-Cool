@@ -206,11 +206,14 @@ function createMap(webmapitem) {
             dojo.query("html").addClass("embed");
         }
 
-
         //get the popup click handler so we can disable it when measure tool is active
         clickHandler = response.clickEventHandle;
         clickListener = response.clickEventListener;
         map = response.map;
+
+        /* ===== ADDITION =====*/
+        customClickHandler = dojo.connect(map,"onClick",customClickListener);
+        /* ===== END ADDITION =====*/
 
         //Constrain the extent of the map to the webmap's initial extent
         if (configOptions.constrainmapextent) {
@@ -237,7 +240,6 @@ function createMap(webmapitem) {
 function initUI(response) {
     adjustPopupSize();
     var layers = response.itemInfo.itemData.operationalLayers;
-
 
     //constrain the extent
     if (configOptions.constrainmapextent) {
@@ -306,7 +308,6 @@ function initUI(response) {
     //Add/Remove tools depending on the config settings or url parameters
     /* ===== ADDITION ===== */
     addVisitWidget();
-    toggleVisit();
     /* ===== END ADDITION ===== */
 
     if (configOptions.displayprint === true) {
@@ -608,13 +609,13 @@ function updateLinkUrls() {
 
     if (configOptions.bitly.key && configOptions.bitly.login) {
         var url = "http://api.bit.ly/v3/shorten?" + "login=" + configOptions.bitly.login + "&apiKey=" + configOptions.bitly.key + "&longUrl=" + encodeURIComponent(link) + "&format=json";
-        console.log(url);
+        //console.log(url);
         esri.request({
             url: url,
             handleAs: "json",
             callbackParamName: "callback",
             load: function (results) {
-                console.log(results);
+                //console.log(results);
                 createLink(mapTitle, results.data.url);
             },
             error: function (e) {
@@ -907,7 +908,7 @@ function addMeasurementWidget() {
         resizable: false,
         dockable: false,
         closable: false,
-        style: "position:absolute;top:0;left:50px;width:245px;height:175px;z-index:100;visibility:hidden;",
+        style: "position:absolute;top:50px;left:100px;width:245px;height:175px;z-index:100;visibility:hidden;",
         id: 'floater'
     }, dojo.byId('floater'));
     fp.startup();
@@ -919,7 +920,7 @@ function addMeasurementWidget() {
         innerHTML: esri.substitute({
             close_title: i18n.panel.close.title,
             close_alt: i18n.panel.close.label
-        }, '<a href="javascript:toggleMeasure();"><img  src="images/close.png"/></a>')
+        }, '<a alt="${close_alt}" title="${close_title}" href="JavaScript:toggleMeasure();"><img  src="images/close.png"/></a>')
     }, titlePane);
 
     measure = new esri.dijit.Measurement({
@@ -1165,19 +1166,25 @@ function destroyEditor() {
     }
 
 }
+
 //Utility methods used to enable/disable popups. For example when users are measuring locations
 //on the map we want to turn popups off so they don't appear when users click to specify a measure area. 
 function enablePopups() {
+    //console.log(".enablePopups() :: clickListener = " + clickListener);
     if (clickListener) {
         clickHandler = dojo.connect(map, "onClick", clickListener);
+        customClickHandler = dojo.connect(map, "onClick", customClickListener);
     }
+    //console.log(".enablePopups() - END");
 }
 
 function disablePopups() {
     if (clickHandler) {
         dojo.disconnect(clickHandler);
+        dojo.disconnect(customClickHandler);
     }
 }
+
 
 //Create menu of social network sharing options (Email, Twitter, Facebook)
 function createSocialLinks() {
@@ -1313,7 +1320,7 @@ function addTimeSlider(timeProperties) {
         resizable: false,
         dockable: false,
         closable: false,
-        style: "position:absolute;top:30px;left:0;width:70%;height:150px;z-index:100;visibility:hidden;",
+        style: "position:absolute;top:0px;left:350px;width:70%;height:150px;z-index:100;visibility:hidden;",
         id: 'timeFloater'
     }, dojo.byId('timeFloater'));
     fp.startup();
@@ -1631,19 +1638,106 @@ function createElevationProfileTools() {
 /* ====================================================================== */
 /*                               ADDITION                                 */
 /* ====================================================================== */
+var pointCoords;
+var pointClickNum = 1;
+var addPointButton;
+var visitPoints = [];
+
+function customClickListener(evt, a,b,c) {
+    //console.log("customClickListener()");
+    //console.log(" :: evt", evt);
+    //console.log(" :: info window", map.infoWindow);
+    //console.log(" :: actionListDiv", map.infoWindow._actionList);
+
+    pointCoords = evt.mapPoint;
+    //console.log("Point: ", pointCoords);
+    try {
+        //add a button to the toolbar to toggle the time display
+        addPointButton = new dijit.form.Button({
+            label: "Add Point To Visit",
+            title: "Add Point To Visit",
+            id: "addPointButton",
+            iconClass: "esriAddIcon"
+        });
+
+        dojo.connect(addPointButton, "onClick", function () {
+            //console.log("Point: ", pointCoords);
+            addVisitPoint(pointCoords);
+        });
+
+        map.infoWindow._actionList.appendChild(addPointButton.domNode);
+    } catch (error) {
+        //not really an error...
+        /*
+        var noMatch = true;
+        //console.log(" :: point coords = ", pointCoords);
+        for (var i=0; i<visitPoints.length; ++i) {
+            //console.log(" :: visit points [" + i + "] = ", visitPoints[i].point);
+            if (visitPoints[i].point.x+50 >= pointCoords.x && visitPoints[i].point.x-50 <= pointCoords.x && visitPoints[i].point.y+50 >= pointCoords.y && visitPoints[i].point.y-50 <= pointCoords.y) {
+                noMatch = false;
+                break;
+            }
+        }
+        if (noMatch) addPointButton.domNode.style.visibility = 'visible';
+        else addPointButton.domNode.style.visibility = 'hidden';
+        */
+    }
+}
+
+function addVisitPoint(point) {
+    //console.log(".addVisitPoint()");
+    var match = false;
+    //console.log(" :: new point = ", point);
+    for (var i=0; i<visitPoints.length; ++i) {
+        //console.log(" :: visit points [" + i + "] = ", visitPoints[i].point);
+        if (visitPoints[i].point.x+50 >= point.x && visitPoints[i].point.x-50 <= point.x && visitPoints[i].point.y+50 >= point.y && visitPoints[i].point.y-50 <= point.y) {
+            match = true;
+            break;
+        }
+    }
+    if (match) return;
+
+    // =========
+
+    var djColorFill = new dojo.Color(dojo.Color.named.purple);
+    var djColorLine = new dojo.Color(dojo.Color.named.white);
+    var outline = new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, djColorLine, 3);
+    var chartLocationSymbol = new esri.symbol.SimpleMarkerSymbol(esri.symbol.SimpleMarkerSymbol.STYLE_CIRCLE, 23, outline, djColorFill);
+    var gr = new esri.Graphic(point, chartLocationSymbol);
+    map.graphics.add(gr);
+
+    var font = new esri.symbol.Font("14pt",esri.symbol.Font.STYLE_ITALIC,
+        esri.symbol.Font.VARIANT_NORMAL,esri.symbol.Font.WEIGHT_BOLD,"Arial");
+    var chartLocationLabel = new esri.symbol.TextSymbol(pointClickNum.toString(), font, djColorLine);
+    chartLocationLabel.setOffset(-1,-6);
+    var gr2 = new esri.Graphic(point, chartLocationLabel);
+    map.graphics.add(gr2);
+
+    visitPoints.push({markerGR:gr, labelGR:gr2, point:point});
+
+    ++pointClickNum;
+    //console.log(" :::: GRAPHIC ADDED");
+
+    //addPointButton.domNode.style.visibility = 'hidden';
+}
 
 //create a floating pane to hold the visit widget
 function addVisitWidget() {
+    /*
     var fp = new dojox.layout.FloatingPane({
         title: "My Visit",
         resizable: false,
         dockable: false,
         closable: false,
-        style: "position:absolute;top:200px;left:50px;width:245px;height:175px;z-index:99;visibility:hidden;",
+        style: "position:absolute;top:0px;left:50px;width:245px;height:175px;z-index:99;visibility:hidden;",
         id: 'visit'
     }, dojo.byId('visit'));
     fp.startup();
+    setVisitContent();
+    toggleVisit();
+    */
 
+    /*
     var titlePane = dojo.query('#visit .dojoxFloatingPaneTitle')[0];
     //add close button to title pane
     var closeDiv = dojo.create('div', {
@@ -1651,11 +1745,8 @@ function addVisitWidget() {
         innerHTML: esri.substitute({
             close_title: i18n.panel.close.title,
             close_alt: i18n.panel.close.label
-        }, '<a href="javascript:toggleVisit();"><img  src="images/close.png"/></a>')
+        }, '<a alt="${close_alt}" title="${close_title}" href="JavaScript:toggleVisit();"><img  src="images/close.png"/></a>')
     }, titlePane);
-
-    var contentDiv = dojo.byId('visitDiv');
-    contentDiv.innerHTML = "Here is some content... Here is some content... Here is some content... Here is some content... Here is some content... Here is some content... Here is some content... Here is some content... Here is some content... Here is some content... Here is some content... Here is some content... Here is some content... Here is some content... Here is some content... Here is some content... Here is some content... Here is some content... Here is some content...  Here is some content... Here is some content... Here is some content...  Here is some content... Here is some content... Here is some content... "
 
     var toggleButton = new dijit.form.ToggleButton({
         label: "My Visit",
@@ -1669,14 +1760,22 @@ function addVisitWidget() {
     });
 
     dojo.byId('webmap-toolbar-center').appendChild(toggleButton.domNode);
+    */
+
+    /*
+    var toggleButton = new dijit.form.ToggleButton({
+        label: "Mark Point",
+        title: "Mark Point to Include in Visit Plan/Report",
+        id: "toggleButton2",
+        iconClass: "esriMeasureIcon"
+    });
+
+    dojo.connect(toggleButton, "onClick", function () {
+        toggleMapClick();
+    });
+
+    dojo.byId('webmap-toolbar-center').appendChild(toggleButton.domNode);
+    */
 }
-//Show/hide the measure widget when the measure button is clicked.
-function toggleVisit() {
-    if (dojo.byId('visit').style.visibility === 'hidden') {
-        dijit.byId('visit').show();
-        dijit.byId('toggleButton2').set('checked', true); //check the measure toggle button
-    } else {
-        dijit.byId('visit').hide();
-        dijit.byId('toggleButton2').set('checked', false); //uncheck the measure toggle button
-    }
-}
+
+
