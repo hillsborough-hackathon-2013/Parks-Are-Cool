@@ -25,7 +25,16 @@
       <file leaf-file-name="index.html" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="155" column="19" selection-start="7382" selection-end="7382" vertical-scroll-proportion="0.5928753">
+            <state line="5" column="95" selection-start="200" selection-end="200" vertical-scroll-proportion="0.1918736">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="printout.html" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/printout.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="44" column="112" selection-start="2153" selection-end="2153" vertical-scroll-proportion="-6.576923">
               <folding />
             </state>
           </provider>
@@ -34,7 +43,7 @@
       <file leaf-file-name="layout.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/javascript/layout.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="198" column="56" selection-start="9694" selection-end="9694" vertical-scroll-proportion="0.0">
+            <state line="1908" column="0" selection-start="69736" selection-end="69736" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -61,6 +70,7 @@
       <list>
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/css/layout.css" />
+        <option value="$PROJECT_DIR$/printout.html" />
         <option value="$PROJECT_DIR$/javascript/layout.js" />
         <option value="$PROJECT_DIR$/index.html" />
       </list>
@@ -116,20 +126,6 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hackathon" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Parks-Are-Cool" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="images" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
         </subPane>
       </pane>
       <pane id="Scope">
@@ -152,6 +148,7 @@
     <property name="options.lastSelected" value="Template Data Languages" />
     <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.highlight.symlinks" value="true" />
+    <property name="DefaultHtmlFileTemplate" value="Html" />
     <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
     <property name="options.splitter.details.proportions" value="0.2" />
     <property name="options.searchVisible" value="true" />
@@ -329,16 +326,23 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/printout.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="44" column="112" selection-start="2153" selection-end="2153" vertical-scroll-proportion="-6.576923">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/javascript/layout.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="198" column="56" selection-start="9694" selection-end="9694" vertical-scroll-proportion="0.0">
+        <state line="1908" column="0" selection-start="69736" selection-end="69736" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="155" column="19" selection-start="7382" selection-end="7382" vertical-scroll-proportion="0.5928753">
+        <state line="5" column="95" selection-start="200" selection-end="200" vertical-scroll-proportion="0.1918736">
           <folding />
         </state>
       </provider>

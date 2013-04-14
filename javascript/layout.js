@@ -1900,10 +1900,12 @@ globalHtmlToPrint = "";
 function printVisitList() {
     globalHtmlToPrint = getVisitHTML(false, false);
     console.log("***** TO PRINT: " + globalHtmlToPrint);
+    window.open("printout.html","_blank","");
 }
 function printVisitHunt() {
     globalHtmlToPrint = getVisitHTML(true, false);
     console.log("***** TO PRINT: " + globalHtmlToPrint);
+    window.open("printout.html","_blank","");
 }
 
 //===============================================================

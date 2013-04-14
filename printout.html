@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Parks Are Cool! Printout</title>
+    <link rel="stylesheet" type="text/css" href="http://serverapi.arcgisonline.com/jsapi/arcgis/3.4/js/dojo/dijit/themes/claro/claro.css">
+    <link rel="stylesheet" type="text/css" href="http://serverapi.arcgisonline.com/jsapi/arcgis/3.4/js/dojo/dijit/themes/claro/document.css">
+
+    <link rel="stylesheet" type="text/css" href="http://serverapi.arcgisonline.com/jsapi/arcgis/3.4/js/dojo/dojox/layout/resources/floatingpane.css">
+    <link rel="stylesheet" type="text/css" href="http://serverapi.arcgisonline.com/jsapi/arcgis/3.4/js/esri/css/esri.css" />
+    <link rel="stylesheet" type="text/css" href="css/layout.css">
+    <!--[if IE]>
+    <link rel="stylesheet" type="text/css" href="css/ie.css" />
+    <![endif]-->
+    <script type="text/javascript">
+        var dojoConfig = {
+            parseOnLoad: true,
+            packages: [{
+                name: "esriTemplate",
+                location: location.pathname.replace(/\/[^/]+$/, '')
+            }, {
+                name: "utilities",
+                location: location.pathname.replace(/\/[^/]+$/, '') + '/javascript'
+            }, {
+                name: "apl",
+                location: location.pathname.replace(/\/[^/]+$/, '') + '/apl'
+            }]
+        };
+    </script>
+    <script type="text/javascript" src="http://serverapi.arcgisonline.com/jsapi/arcgis/3.4"></script>
+    <script type="text/javascript">
+        dojo.require("esri.layout");
+    </script>
+
+    <script>
+        dojo.ready(function(){
+            console.log("dojo ready");
+            var visitDiv = dojo.byId("visitWindow");
+            //console.log(" :: visit div = " + visitDiv);
+            if (window.opener && window.opener.globalHtmlToPrint) {
+                var visitHTML = window.opener.globalHtmlToPrint;
+                //console.log(" :: visit html = " + visitHTML);
+                visitDiv.innerHTML = visitHTML;
+            } else {
+                visitDiv.innerHTML = "You will need to create a printout in the <a href='index.html'>viewer.</a>";
+            }
+        });
+    </script>
+</head>
+</head>
+
+<body class="claro" style="padding: 20px;overflow:auto" scroll>
+    <!-- Header Section-->
+    <div id="header" data-dojo-type="dijit.layout.ContentPane" style="width:960px;padding:0;">
+        <img src="images/hclogotitle.png" height="42" width="331">
+    </div>
+    <br/>
+    <div id="visitWindow" data-dojo-type="dijit.layout.ContentPane" style="width:960px;">
+        Loading...
+    </div>
+    <div id="footer" data-dojo-type="dijit.layout.ContentPane" style="width:960px;padding:5px">
+        &copy;2013 Hillsborough County. Developed by Sunshine Learning Systems.
+    </div>
+</body>
+</html>

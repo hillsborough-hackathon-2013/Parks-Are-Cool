@@ -2,7 +2,11 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Hillsborough County Parks Are Cool!</title>
+
+      <!-- ===== ADDITION: To prevent conflict between map zoom and page zoom on mobile devices ===== -->
+      <meta name="viewport" content="user-scalable=no" />
+
+    <title>Parks Are Cool!</title>
     <link rel="stylesheet" type="text/css" href="http://serverapi.arcgisonline.com/jsapi/arcgis/3.4/js/dojo/dijit/themes/claro/claro.css">
     <link rel="stylesheet" type="text/css" href="http://serverapi.arcgisonline.com/jsapi/arcgis/3.4/js/dojo/dijit/themes/claro/document.css">
 
@@ -87,7 +91,7 @@
         //This option is used when the elevation chart is displayed to control what is displayed when users mouse over or touch the chart. When true, elevation gain/loss will be shown from the first location to the location under the cursor/finger. 
         showelevationdifference: false,
         displayscalebar: true,
-        displayshare: true,
+        displayshare: false,
         //if enabled enter bitly key and login below.
         //The application allows users to share the map with social networking sites like twitter
         //and facebook. The url for the application can be quite long so shorten it using bit.ly. 
