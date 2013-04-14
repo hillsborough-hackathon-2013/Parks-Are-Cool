@@ -576,3 +576,18 @@ div#editDiv.templatePicker .grid  .selectedItem {
     color: #cccccc;
 }
 */
+.markerIcon{
+    background-image:url(../images/marker.png);
+    background-repeat:no-repeat;
+    display:inline-block;
+    height:34px;
+    width:20px;
+    margin:4px 0 4px 4px;
+}
+/*
+.headerBackground {
+    background:url(../images/shore.jpg);
+    background-size:100% 100%;
+    background-repeat:no-repeat;
+}
+*/

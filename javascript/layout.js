@@ -196,7 +196,7 @@ function createMap(webmapitem) {
             configOptions.title = configOptions.title || response.itemInfo.item.title;
             dojo.create("p", {
                 id: 'webmapTitle',
-                innerHTML: configOptions.title
+                innerHTML: '<img src="images/hclogotitle.png" height="42" width="331">' // configOptions.title
             }, "header");
             dojo.style(dojo.byId("header"), "height", "38px");
         } else if (!configOptions.link1.url && !configOptions.link2.url) {
@@ -446,6 +446,9 @@ function initUI(response) {
     //Create the search location tool
     if (configOptions.displaysearch === true) {
         createSearchTool();
+        /* ===== ADDITION ===== */
+        createGeoLocator();
+        /* ===== END ADDITION ===== */
     } else {
         esri.hide(dojo.byId('webmap-toolbar-right'));
     }
@@ -1251,6 +1254,9 @@ function createSocialLinks() {
     dojo.connect(menuButton, 'onClick', function () {
         updateLinkUrls();
     });
+
+    /* ===== ADDITION ===== */
+    /* ===== END ADDITION ===== */
 }
 
 //Uses the Geocoder Widget (from 3.3) 
@@ -1888,7 +1894,8 @@ function getVisitHTML(buildHunt, includeLink) {
     return list.join('<hr width="100%"/>');
 }
 
-//=====
+//===============================================================
+
 globalHtmlToPrint = "";
 function printVisitList() {
     globalHtmlToPrint = getVisitHTML(false, false);
@@ -1897,4 +1904,22 @@ function printVisitList() {
 function printVisitHunt() {
     globalHtmlToPrint = getVisitHTML(true, false);
     console.log("***** TO PRINT: " + globalHtmlToPrint);
+}
+
+//===============================================================
+
+function createGeoLocator() {
+    console.log(".createGeoLocator()");
+    /*
+    var detailTb = new dijit.form.ToggleButton({
+        showLabel: true,
+        label: "Current Location",  //TODO: Move text to language files
+        title: "Current Location",  //TODO: Move text to language files
+        checked: true,
+        iconClass: 'markerIcon',
+        id: 'detailButton'
+    }, dojo.create('div'));
+    dojo.byId('webmap-toolbar-right').appendChild(detailTb.domNode);
+    */
+    //dojo.byId('webmap-toolbar-right').appendChild('<img src="../images/marker.png" width="10" height="17" >');
 }

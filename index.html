@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Parks Are Cool!</title>
+    <title>Hillsborough County Parks Are Cool!</title>
     <link rel="stylesheet" type="text/css" href="http://serverapi.arcgisonline.com/jsapi/arcgis/3.4/js/dojo/dijit/themes/claro/claro.css">
     <link rel="stylesheet" type="text/css" href="http://serverapi.arcgisonline.com/jsapi/arcgis/3.4/js/dojo/dijit/themes/claro/document.css">
 
@@ -65,7 +65,7 @@
         //specify an owner for the app - used by the print option. The default value will be the web map's owner
         owner: 'Hillsborough County',
         //Specify a color theme for the app. Valid options are gray,blue,purple,green and orange
-        theme: 'orange',
+        theme: 'blue',
         //Optional tools - set to false to hide the tool
         //set to false to hide the zoom slider on the map 
         displayslider: true,
@@ -87,7 +87,7 @@
         //This option is used when the elevation chart is displayed to control what is displayed when users mouse over or touch the chart. When true, elevation gain/loss will be shown from the first location to the location under the cursor/finger. 
         showelevationdifference: false,
         displayscalebar: true,
-        displayshare: false,
+        displayshare: true,
         //if enabled enter bitly key and login below.
         //The application allows users to share the map with social networking sites like twitter
         //and facebook. The url for the application can be quite long so shorten it using bit.ly. 
@@ -152,12 +152,12 @@
         //ArcGIS.com. Enter link values for the link1 and link2 and text to add links. For example
         //url:'http://www.esri.com',text:'Esri'
         link1: {
-          url: '',
-          text: ''
+            url: 'http://www.hillsboroughcounty.org/facilities.aspx',
+            text: 'Facilities Search'
         },
         link2: {
-          url: '',
-          text: ''
+            url: 'http://www.hillsboroughcounty.org/FormCenter/Email-Forms-2/Parks-Recreation-and-Conservation-Genera-59',
+            text: 'Submit a Comment'
         },
         //specify the width of the panel that holds the editor, legend, details
         leftpanewidth: 228,
@@ -189,7 +189,7 @@
     style="width:100%; height:100%;padding:0;">
       <!-- Header Section-->
       <div id="header" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region:'top'">
-        <!--Title dyanmically generated -->
+        <!--Title dynamically generated -->
         <div id="nav" style='display:none;'>
           <!-- links are dynamically generated-->
           <ul>
