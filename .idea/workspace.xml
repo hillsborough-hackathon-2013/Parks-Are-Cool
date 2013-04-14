@@ -22,10 +22,19 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="index.html" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="index.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="5" column="95" selection-start="200" selection-end="200" vertical-scroll-proportion="0.1918736">
+            <state line="68" column="24" selection-start="3259" selection-end="3259" vertical-scroll-proportion="25.723684">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="README.md" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/README.md">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="38" column="126" selection-start="2491" selection-end="2491" vertical-scroll-proportion="0.8550107">
               <folding />
             </state>
           </provider>
@@ -68,11 +77,11 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/css/layout.css" />
         <option value="$PROJECT_DIR$/printout.html" />
         <option value="$PROJECT_DIR$/javascript/layout.js" />
         <option value="$PROJECT_DIR$/index.html" />
+        <option value="$PROJECT_DIR$/README.md" />
       </list>
     </option>
   </component>
@@ -305,13 +314,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="33" column="0" selection-start="1659" selection-end="1659" vertical-scroll-proportion="0.781337">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/javascript/AppConfigUtils.js">
       <provider selected="true" editor-type-id="text-editor">
         <state line="52" column="18" selection-start="2357" selection-end="2357" vertical-scroll-proportion="0.3326226">
@@ -342,7 +344,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="95" selection-start="200" selection-end="200" vertical-scroll-proportion="0.1918736">
+        <state line="68" column="24" selection-start="3259" selection-end="3259" vertical-scroll-proportion="25.723684">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="38" column="126" selection-start="2491" selection-end="2491" vertical-scroll-proportion="0.8550107">
           <folding />
         </state>
       </provider>
