@@ -1801,29 +1801,11 @@ function addVisit() {
     dojo.addClass(dojo.byId('visitPanel'), 'panel_content');
 
     //TODO: Move visit instructions into language files
-    dojo.byId('visitPanel').innerHTML = '<div>Build a report by adding points to the map. Set your areas of interest using the <i>Layers</i> menu.</div><br/><div id="visitList"></div>';
+    dojo.byId('visitPanel').innerHTML = '<div>Build a report by adding points to the map. Set your areas of interest using the <i>Layers</i> menu.</div><div id="printInstructions"></div><br/><div id="visitList"></div>';
 
     navigateStack("visitPanel");
 }
 
-function updateVisitList() {
-    var list = [];
-    var vp,cnt,item;
-    for (var i=0; i<visitPoints.length; ++i) {
-        vp = visitPoints[i];
-        item = '<b>Visit Point ' + String(i+1) + '</b> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <a href="javascript:removeVisitPoint(' + i + ')">Remove</a><br/>';
-        for (var j=0; j<vp.content.length; ++j) {
-        //for (var j=0; j<3; ++j) {
-            cnt = vp.content[j];
-            //cnt = {labelName:"Content " + String(j+1), legendItem:"[__] Legend Item", descText:"Here is the description of the content.<br/>It will likely be multiple lines.<br/>List this..."};
-            item += '<p class="visitContentHeading">' + cnt.labelName + '</p>';
-            item += '<p class="visitLegendItem">' + cnt.legendItem + '</p>';
-            item += '<p class="visitContent">' + cnt.descText + '</p>';
-        }
-        list.push(item);
-    }
-    dojo.byId('visitList').innerHTML = list.join('<hr width="100%"/>');
-}
 function removeVisitPoint(index) {
     //console.log(".removeVisitPoint(" + index + ")");
     //correct numbers on map
@@ -1841,6 +1823,78 @@ function removeVisitPoint(index) {
     }
     //shorten array of stored points
     visitPoints.splice(index, 1);
+
     //update visit list
     updateVisitList();
+}
+
+function updateVisitList() {
+    var theList = this.getVisitHTML(false, true);
+    dojo.byId('visitList').innerHTML = theList;
+    if (theList.length > 0) {
+        dojo.byId("printInstructions").innerHTML = '<p>Print As <a href="javascript:printVisitList()">Reference List</a> or <a href="javascript:printVisitHunt()">Scavenger Hunt</a></p>';
+    } else {
+        dojo.byId("printInstructions").innerHTML = '';
+    }
+}
+
+//=====
+function getVisitHTML(buildHunt, includeLink) {
+    var list = [];
+    var vp,cnt,item,i,lbl;
+    var vps = [];
+    if (buildHunt) {
+        console.log(" :: vps BEFORE:", vps);
+        var temp = [];
+        for (i=0; i<visitPoints.length; ++i) {
+            temp.push(i);
+        }
+        //randomize order
+        var temp2 = [];
+        console.log(" :: starting temp length = " + temp.length);
+        while (temp.length>0) {
+            var index = Math.floor(Math.random()*temp.length);
+            temp2.push(temp[index]);
+            temp.splice(index, 1);
+            console.log(" :::: temp length = " + temp.length + " :: temp2 length = " + temp2.length);
+        }
+        console.log(" :: temp2 = " + temp2);
+        for (i=0; i<temp2.length; ++i) {
+            vps[i] = visitPoints[ temp2[i] ];
+        }
+        console.log(" :: vps AFTER:", vps);
+    } else {
+        for (i=0; i<visitPoints.length; ++i) {
+            vps[i] = visitPoints[i];
+        }
+    }
+    for (i=0; i<vps.length; ++i) {
+        vp = vps[i];
+        lbl = (buildHunt) ? '_______' : String(i+1);
+        item = '<b>Visit Point ' + lbl + '</b>';
+        if (includeLink) item += ' &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <a href="javascript:removeVisitPoint(' + i + ')">Remove</a>';
+        item += '<br/>';
+        for (var j=0; j<vp.content.length; ++j) {
+            //for (var j=0; j<3; ++j) {
+            cnt = vp.content[j];
+            //cnt = {labelName:"Content " + String(j+1), legendItem:"[__] Legend Item", descText:"Here is the description of the content.<br/>It will likely be multiple lines.<br/>List this..."};
+            item += '<p class="visitContentHeading">' + cnt.labelName + '</p>';
+            item += '<p class="visitLegendItem">' + cnt.legendItem + '</p>';
+            item += '<p class="visitContent">' + cnt.descText + '</p>';
+        }
+        list.push(item);
+    }
+
+    return list.join('<hr width="100%"/>');
+}
+
+//=====
+globalHtmlToPrint = "";
+function printVisitList() {
+    globalHtmlToPrint = getVisitHTML(false, false);
+    console.log("***** TO PRINT: " + globalHtmlToPrint);
+}
+function printVisitHunt() {
+    globalHtmlToPrint = getVisitHTML(true, false);
+    console.log("***** TO PRINT: " + globalHtmlToPrint);
 }
