@@ -29,4 +29,5 @@ How:
 Installation:
     Web server running Word Press Version 3.5.1 with FTP enabled
     Restore template and content from wp-backup folder
-    FTP the application files (everything except the wp-backup folder and this readme file) to the "app" folder under the site root.
+    FTP the application files to the "app" folder under the site root
+        EXCEPT wp-backup & .idea folders and this readme file
