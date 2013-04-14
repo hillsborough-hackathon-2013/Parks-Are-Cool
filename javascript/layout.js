@@ -306,10 +306,6 @@ function initUI(response) {
     }
 
     //Add/Remove tools depending on the config settings or url parameters
-    /* ===== ADDITION ===== */
-    addVisitWidget();
-    /* ===== END ADDITION ===== */
-
     if (configOptions.displayprint === true) {
         //get print info 
        /* var printInfo = esri.request({
@@ -432,6 +428,11 @@ function initUI(response) {
         if (configOptions.displaylegend === true) {
             addLegend(layerInfo);
         }
+
+        /* ===== ADDITION ===== */
+            addVisit();
+        /* ===== END ADDITION ===== */
+
         if (configOptions.leftPanelVisibility === false) {
             hideLeftPanel();
         }
@@ -449,8 +450,10 @@ function initUI(response) {
         esri.hide(dojo.byId('webmap-toolbar-right'));
     }
 
-    //add the time slider if the layers are time-aware 
-    if (configOptions.displaytimeslider === true) {
+    //add the time slider if the layers are time-aware
+    /* ===== ADDITION of 'false' to force-disable "time" ===== */
+    /* ===== Figure out why "time" keeps showing up after time-sensitive layers were deleted from web map ===== */
+    if (false && configOptions.displaytimeslider === true) {
         if (response.itemInfo.itemData.widgets && response.itemInfo.itemData.widgets.timeSlider) {
             addTimeSlider(response.itemInfo.itemData.widgets.timeSlider.properties);
         } else {
@@ -539,6 +542,11 @@ function navigateStack(label) {
         case 'detailPanel':
             buttonLabel = 'detailButton';
             break;
+        /* ===== ADDITION ===== */
+        case 'visitPanel':
+            buttonLabel = 'visitButton';
+            break;
+        /* ===== END ADDITION ===== */
     }
     toggleToolbarButtons(buttonLabel);
 }
@@ -576,7 +584,8 @@ function hideLeftPanel() {
 }
 
 function toggleToolbarButtons(label) {
-    var buttons = ['detailButton', 'editButton', 'legendButton'];
+    /* ===== ADDITION: visitButton ===== */
+    var buttons = ['detailButton', 'editButton', 'legendButton', 'visitButton'];
     dojo.forEach(buttons, function (button) {
         if (dijit.byId(button)) {
             if (button === label) {
@@ -825,7 +834,9 @@ function addLayerList(layers) {
                     } else {
                         layer.layer.setVisibility(!layer.layer.visible);
                     }
-
+                    /* ===== ADDITION ===== */
+                    updateVisitList();
+                    /* ===== END ADDITION ===== */
                 }
             }));
         });
@@ -879,6 +890,8 @@ function addPrint() {
             'titleText': configOptions.title,
             'scalebarUnit': (i18n.viewer.main.scaleBarUnits === 'english') ? 'Miles' : 'Kilometers',
             'legendLayers': []
+        //TODO: Add custom texts here to include visit info in same report.
+        //NOTE: Requires setting up and configuring a custom print service
     };
 
     //TODO - replace default templates with info from service
@@ -1667,7 +1680,8 @@ function customClickListener(evt, a,b,c) {
 
         map.infoWindow._actionList.appendChild(addPointButton.domNode);
     } catch (error) {
-        //not really an error...
+        //not really an error condition, just easy way to detect button was already created.
+        //TODO: Figure out how to disable add button or switch it to delete
         /*
         var noMatch = true;
         //console.log(" :: point coords = ", pointCoords);
@@ -1719,63 +1733,60 @@ function addVisitPoint(point) {
     //console.log(" :::: GRAPHIC ADDED");
 
     //addPointButton.domNode.style.visibility = 'hidden';
+    updateVisitList();
 }
 
-//create a floating pane to hold the visit widget
-function addVisitWidget() {
-    /*
-    var fp = new dojox.layout.FloatingPane({
-        title: "My Visit",
-        resizable: false,
-        dockable: false,
-        closable: false,
-        style: "position:absolute;top:0px;left:50px;width:245px;height:175px;z-index:99;visibility:hidden;",
-        id: 'visit'
-    }, dojo.byId('visit'));
-    fp.startup();
-    setVisitContent();
-    toggleVisit();
-    */
+//make panel for visit on the left
+function addVisit() {
+    var visitTb = new dijit.form.ToggleButton({
+        showLabel: true,
+        label: "Visit", //i18n.tools.visit.label,
+        title: "Visit", //i18n.tools.visit.title,
+        checked: true,
+        iconClass: 'esriDetailsIcon',
+        id: 'visitButton'
+    }, dojo.create('div'));
 
-    /*
-    var titlePane = dojo.query('#visit .dojoxFloatingPaneTitle')[0];
-    //add close button to title pane
-    var closeDiv = dojo.create('div', {
-        id: "closeBtn",
-        innerHTML: esri.substitute({
-            close_title: i18n.panel.close.title,
-            close_alt: i18n.panel.close.label
-        }, '<a alt="${close_alt}" title="${close_title}" href="JavaScript:toggleVisit();"><img  src="images/close.png"/></a>')
-    }, titlePane);
+    dojo.byId('webmap-toolbar-left').appendChild(visitTb.domNode);
 
-    var toggleButton = new dijit.form.ToggleButton({
-        label: "My Visit",
-        title: "MY VISIT",
-        id: "toggleButton2",
-        iconClass: "esriMeasureIcon"
+    dojo.connect(visitTb, 'onClick', function () {
+        navigateStack('visitPanel');
     });
 
-    dojo.connect(toggleButton, "onClick", function () {
-        toggleVisit();
+    var visitCp = new dijit.layout.ContentPane({
+        title: "Visit", //TODO: i18n.tools.visit.title,
+        selected: true,
+        region: 'center',
+        id: "visitPanel"
     });
 
-    dojo.byId('webmap-toolbar-center').appendChild(toggleButton.domNode);
-    */
+    dijit.byId('stackContainer').addChild(visitCp);
+    dojo.addClass(dojo.byId('visitPanel'), 'panel_content');
 
-    /*
-    var toggleButton = new dijit.form.ToggleButton({
-        label: "Mark Point",
-        title: "Mark Point to Include in Visit Plan/Report",
-        id: "toggleButton2",
-        iconClass: "esriMeasureIcon"
-    });
+    //TODO: Move visit instructions into language files
+    dojo.byId('visitPanel').innerHTML = '<div>Build a report by adding points to the map. Set your areas of interest using the <i>Layers</i> menu.</div><br/><div id="visitList"></div>';
 
-    dojo.connect(toggleButton, "onClick", function () {
-        toggleMapClick();
-    });
-
-    dojo.byId('webmap-toolbar-center').appendChild(toggleButton.domNode);
-    */
+    navigateStack("visitPanel");
 }
 
-
+function updateVisitList() {
+    var list = [];
+    var vp,cnt,item;
+    for (var i=0; i<visitPoints.length; ++i) {
+        vp = visitPoints[i];
+        item = '<b>Visit Point ' + String(i+1) + '</b> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <a href="javascript:removeVisitPoint(' + i + ')">Remove</a><br/>';
+        //for (var j=0; j<vp.content.length; ++j) {
+        for (var j=0; j<3; ++j) {
+            //cnt = vp.content[j];
+            cnt = {labelName:"Content " + String(j+1), legendItem:"[__] Legend Item", descText:"Here is the description of the content.<br/>It will likely be multiple lines.<br/>List this..."};
+            item += '<p class="visitContentHeading">' + cnt.labelName + '</p>';
+            item += '<p class="visitLegendItem">' + cnt.legendItem + '</p>';
+            item += '<p class="visitContent">' + cnt.descText + '</p>';
+        }
+        list.push(item);
+    }
+    dojo.byId('visitList').innerHTML = list.join('<hr width="100%"/>');
+}
+function removeVisitPoint(index) {
+    console.log(".removeVisitPoint(" + index + ")");
+}
