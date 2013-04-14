@@ -1652,15 +1652,19 @@ function createElevationProfileTools() {
 /*                               ADDITION                                 */
 /* ====================================================================== */
 var pointCoords;
+var pointFeatures;
 var pointClickNum = 1;
 var addPointButton;
 var visitPoints = [];
 
-function customClickListener(evt, a,b,c) {
+function customClickListener(evt) {
     //console.log("customClickListener()");
     //console.log(" :: evt", evt);
     //console.log(" :: info window", map.infoWindow);
     //console.log(" :: actionListDiv", map.infoWindow._actionList);
+
+    pointFeatures = [];
+    setTimeout("storeInfoWindowFeatures()",500);
 
     pointCoords = evt.mapPoint;
     //console.log("Point: ", pointCoords);
@@ -1675,10 +1679,11 @@ function customClickListener(evt, a,b,c) {
 
         dojo.connect(addPointButton, "onClick", function () {
             //console.log("Point: ", pointCoords);
-            addVisitPoint(pointCoords);
+            addVisitPoint(pointCoords, pointFeatures);
         });
 
         map.infoWindow._actionList.appendChild(addPointButton.domNode);
+
     } catch (error) {
         //not really an error condition, just easy way to detect button was already created.
         //TODO: Figure out how to disable add button or switch it to delete
@@ -1698,8 +1703,16 @@ function customClickListener(evt, a,b,c) {
     }
 }
 
-function addVisitPoint(point) {
+function storeInfoWindowFeatures() {
+    //console.log(".storeInfoWindowFeatures()");
+    pointFeatures = map.infoWindow.features;
+    //console.log("Features: ", pointFeatures);
+}
+
+function addVisitPoint(point, features) {
     //console.log(".addVisitPoint()");
+    if (!features && features.length == 0) return;
+
     var match = false;
     //console.log(" :: new point = ", point);
     for (var i=0; i<visitPoints.length; ++i) {
@@ -1713,6 +1726,7 @@ function addVisitPoint(point) {
 
     // =========
 
+    //show circle
     var djColorFill = new dojo.Color(dojo.Color.named.purple);
     var djColorLine = new dojo.Color(dojo.Color.named.white);
     var outline = new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, djColorLine, 3);
@@ -1720,6 +1734,7 @@ function addVisitPoint(point) {
     var gr = new esri.Graphic(point, chartLocationSymbol);
     map.graphics.add(gr);
 
+    //show number
     var font = new esri.symbol.Font("14pt",esri.symbol.Font.STYLE_ITALIC,
         esri.symbol.Font.VARIANT_NORMAL,esri.symbol.Font.WEIGHT_BOLD,"Arial");
     var chartLocationLabel = new esri.symbol.TextSymbol(pointClickNum.toString(), font, djColorLine);
@@ -1727,7 +1742,32 @@ function addVisitPoint(point) {
     var gr2 = new esri.Graphic(point, chartLocationLabel);
     map.graphics.add(gr2);
 
-    visitPoints.push({markerGR:gr, labelGR:gr2, point:point});
+    //store content
+    var contentList = [];
+    var feat, ttl, desc, ttlTemplate, descTemplate;
+    //console.log(" :: feature count = " + features.length);
+    for (var i=0; i<features.length; ++i) {
+        feat = features[i];
+        //console.log(" :: info: ", feat._graphicsLayer.infoTemplate.info);
+        ttlTemplate = feat._graphicsLayer.infoTemplate.info.title;
+        if (feat._graphicsLayer.infoTemplate.info.description) {
+            descTemplate = feat._graphicsLayer.infoTemplate.info.description;
+        } else {
+            //TODO: make template from fields list
+            descTemplate = "";
+        }
+        ttlTemplate = ttlTemplate.split("{").join("${");
+        descTemplate = descTemplate.split("{").join("${");
+        ttl = esri.substitute(feat.attributes, ttlTemplate);
+        desc = esri.substitute(feat.attributes, descTemplate);
+
+        if (ttl == "") ttl = "(unknown)";
+
+        //TODO: Figure out how to look up and make HTML for the legend item used to render this feature.
+        contentList.push( {labelName:ttl, legendItem:"", descText:desc} );
+    }
+
+    visitPoints.push({markerGR:gr, labelGR:gr2, point:point, content:contentList});
 
     ++pointClickNum;
     //console.log(" :::: GRAPHIC ADDED");
@@ -1775,10 +1815,10 @@ function updateVisitList() {
     for (var i=0; i<visitPoints.length; ++i) {
         vp = visitPoints[i];
         item = '<b>Visit Point ' + String(i+1) + '</b> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <a href="javascript:removeVisitPoint(' + i + ')">Remove</a><br/>';
-        //for (var j=0; j<vp.content.length; ++j) {
-        for (var j=0; j<3; ++j) {
-            //cnt = vp.content[j];
-            cnt = {labelName:"Content " + String(j+1), legendItem:"[__] Legend Item", descText:"Here is the description of the content.<br/>It will likely be multiple lines.<br/>List this..."};
+        for (var j=0; j<vp.content.length; ++j) {
+        //for (var j=0; j<3; ++j) {
+            cnt = vp.content[j];
+            //cnt = {labelName:"Content " + String(j+1), legendItem:"[__] Legend Item", descText:"Here is the description of the content.<br/>It will likely be multiple lines.<br/>List this..."};
             item += '<p class="visitContentHeading">' + cnt.labelName + '</p>';
             item += '<p class="visitLegendItem">' + cnt.legendItem + '</p>';
             item += '<p class="visitContent">' + cnt.descText + '</p>';
