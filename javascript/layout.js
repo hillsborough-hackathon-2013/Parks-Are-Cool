@@ -1653,7 +1653,6 @@ function createElevationProfileTools() {
 /* ====================================================================== */
 var pointCoords;
 var pointFeatures;
-var pointClickNum = 1;
 var addPointButton;
 var visitPoints = [];
 
@@ -1737,7 +1736,7 @@ function addVisitPoint(point, features) {
     //show number
     var font = new esri.symbol.Font("14pt",esri.symbol.Font.STYLE_ITALIC,
         esri.symbol.Font.VARIANT_NORMAL,esri.symbol.Font.WEIGHT_BOLD,"Arial");
-    var chartLocationLabel = new esri.symbol.TextSymbol(pointClickNum.toString(), font, djColorLine);
+    var chartLocationLabel = new esri.symbol.TextSymbol((visitPoints.length+1).toString(), font, djColorLine);
     chartLocationLabel.setOffset(-1,-6);
     var gr2 = new esri.Graphic(point, chartLocationLabel);
     map.graphics.add(gr2);
@@ -1768,8 +1767,6 @@ function addVisitPoint(point, features) {
     }
 
     visitPoints.push({markerGR:gr, labelGR:gr2, point:point, content:contentList});
-
-    ++pointClickNum;
     //console.log(" :::: GRAPHIC ADDED");
 
     //addPointButton.domNode.style.visibility = 'hidden';
@@ -1828,5 +1825,22 @@ function updateVisitList() {
     dojo.byId('visitList').innerHTML = list.join('<hr width="100%"/>');
 }
 function removeVisitPoint(index) {
-    console.log(".removeVisitPoint(" + index + ")");
+    //console.log(".removeVisitPoint(" + index + ")");
+    //correct numbers on map
+    for (var i=index; i<visitPoints.length; ++i) {
+        vp = visitPoints[i];
+        //remove marker & text
+        map.graphics.remove(vp.markerGR);
+        map.graphics.remove(vp.labelGR);
+        //only keep those points AFTER the one being removed
+        if (i > index) {
+            vp.labelGR.symbol.setText( String(i) );
+            map.graphics.add(vp.markerGR);
+            map.graphics.add(vp.labelGR);
+        }
+    }
+    //shorten array of stored points
+    visitPoints.splice(index, 1);
+    //update visit list
+    updateVisitList();
 }
